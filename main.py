@@ -1,6 +1,7 @@
 import win32gui
 import threading
 import time
+import datetime
 
 
 def windowEnumerationHandler(hwnd, top_windows):
@@ -16,13 +17,17 @@ def rildoBrincando():
 			#print ('Teste do rildo::: ' , i)
 			if "skype" in i[1].lower():
 				print ('Teste do rildo::: ' , i)
+				print('O i de 0 esta sendo::: ', i[0])
 				win32gui.ShowWindow(i[0],5)
 				win32gui.SetForegroundWindow(i[0])
-				#break
+				break
 			
 def printit():
-		threading.Timer(5.0, printit).start()
-		print "Hello, World!"		
+	threading.Timer(5.0, printit).start()
+	rildoBrincando()
+	#teste = raw_input('O que esteve fzendo durante este tempo?')
+	print(datetime.datetime.now())
+	#print ('Oxi::> ' ,teste)		
 
 class ThreadingExample(object):
     """ Threading example class
