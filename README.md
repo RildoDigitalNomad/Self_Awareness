@@ -48,3 +48,6 @@ https://insomniacgeek.com/2018/03/25/run-mongodb-in-a-docker-container-on-docker
 
 set FLASK_APP=hello
 flask run
+
+
+GIT -> https://rogerdudler.github.io/git-guide/index.pt_BR.html

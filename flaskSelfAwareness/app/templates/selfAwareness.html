@@ -1,11 +1,26 @@
+
 <html>
     <head>
         <title>{{ title }} - SelfAwareness Report</title>
+		<script type=text/javascript src="{{url_for('static', filename='jquery-3.4.1.js') }}"></script>
     </head>
     <body>
+	
+	<script type=text/javascript>
+	  $(function() {
+		alert('teste')
+	  });
+	</script>
+				
+		<select>
+			{% for each in dropdown_list %}
+			<option value="{{each}}">{{each}}</option>
+			{% endfor %}
+		</select>
+		
         <h1>Daily report <h1>
 		{% for mainTrack in mainTracks %}
-        <div><p>{{ mainTrack.autor }} --- <b>{{ mainTrack.date }} --- <b>{{ mainTrack.mainQuestion }}</b></p></div>
+        <div><p>{{ mainTrack.autor }} // <b>{{ mainTrack.date }} // <b>{{ mainTrack.mainQuestion }} // Related US: {{ mainTrack.Related_US }}</b></p></div>
         {% endfor %}
     </body>
 </html>
