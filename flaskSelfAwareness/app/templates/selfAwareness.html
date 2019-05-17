@@ -2,25 +2,57 @@
 <html>
     <head>
         <title>{{ title }} - SelfAwareness Report</title>
-		<script type=text/javascript src="{{url_for('static', filename='jquery-3.4.1.js') }}"></script>
+		<!--script type=text/javascript src="{{url_for('static', filename='js/bootstrap.bundle.js') }}"></script-->
+		<!--link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}"-->
+		<script type=text/javascript src="{{url_for('static', filename='js/jquery-3.4.1.js') }}"></script>
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/selfawareness.css') }}">
+		
+		
     </head>
-    <body>
-	
-	<script type=text/javascript>
-	  $(function() {
-		alert('teste')
-	  });
-	</script>
-				
-		<select>
+    <body>			
+		<select id="pickRildo">
 			{% for each in dropdown_list %}
 			<option value="{{each}}">{{each}}</option>
 			{% endfor %}
 		</select>
 		
-        <h1>Daily report <h1>
-		{% for mainTrack in mainTracks %}
-        <div><p>{{ mainTrack.autor }} // <b>{{ mainTrack.date }} // <b>{{ mainTrack.mainQuestion }} // Related US: {{ mainTrack.Related_US }}</b></p></div>
-        {% endfor %}
+        <h1>Daily report - {{rildo}}<h1>
+		
+		<div class="rTable">
+			<div class="rTableHeading">
+				<div class="rTableHead">Select</div>
+				<div class="rTableHead">Data</div>
+				<div class="rTableHead">Descrição</div>
+				<div class="rTableHead">US</div>
+			</div>
+			
+			<div class="rTableBody">
+			{% for mainTrack in mainTracks %}
+				<div class="rTableRow">
+					<div class="rTableCell"> <input type="checkbox" name="match-with-pairs"/> </div>
+					<div class="rTableCell"> {{ mainTrack.date.strftime('%d-%m-%Y-%H:%M') }}</div>
+					<div class="rTableCell"> {{ mainTrack.mainQuestion }}  </div>
+					<div class="rTableCell"> {{ mainTrack.Related_US }} </div>
+				</div>
+			{% endfor %}
+			</div>
+		</div>
+		<input type="submit" name="submit_button" value="Do Something">
+		
+		
+	<script type=text/javascript>
+		$(function() {
+			//alert('teste');
+			//console.log("teste");
+			//alert($("#pickRildo"))
+			//console.log($('#pickRildo').val())
+			//console.log($('#pickRildo option:selected').val())
+			//$('#pickRildo').append('<option value="option6">option6</option>');
+			$("#pickRildo").change(function(){
+				var data= $(this).val();
+				alert(data);            
+			});
+		});
+	</script>
     </body>
 </html>

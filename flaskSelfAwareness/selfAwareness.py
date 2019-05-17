@@ -36,15 +36,11 @@ def control_time():
 	us = ''
 	recurrentQuestion = ''
 	for obj in mainTrack_Collection2.find().sort([("date", -1)]).limit(1):
-		print('Entrou??? >> ', obj)
 		if obj["date"].strftime("%d.%m.%Y - %H:%M")[0:2] == todayDate.strftime("%d.%m.%Y - %H:%M")[0:2]:
-			#print("O  ultimo registro deste dia é::: " , obj)
 			if  obj["Related_US"] != '' and obj["Related_US"] != 'N/A':
 				while True:
 					recurrentQuestion = input('Ainda está trabalhando na ultima tarefa? (%s) - S/N  ' %obj["Related_US"])
 					try:
-			#			print('Rildo vendo a recurrentQuestion:: ' , recurrentQuestion)
-			#			print(recurrentQuestion != 's')
 						if recurrentQuestion != "s" and recurrentQuestion != "n":
 							raise ValueError("A resposta deve ser S (sim) ou N (nao)")
 						else:
@@ -57,7 +53,6 @@ def control_time():
 		us = input('US?? ')
 					
 	#-------------------
-	#print('Pegou a US::: >>  ' , us)
 
 	temp = { "autor": "Nathan",
 			"date":datetime.datetime.now(), #.strftime("%d.%m.%Y - %H:%M"), #verificar se tirando esse strftime ele salva como data
