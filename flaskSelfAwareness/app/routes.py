@@ -4,40 +4,27 @@ from flask import render_template
 from app import app
 import json
 import datetime
+from flask import jsonify, request, make_response, send_from_directory
 
 @app.route('/')
 @app.route('/index')
 def index():
     return "Hello, World!"
 	
-@app.route('/selfawareness')
+@app.route('/selfawareness', methods=['GET', 'POST'])
 def selfAwareness():
+	if request.method == 'POST':
+		print('clicou')
+		if request.form.get('match-with-pairs'):
+			print('tem coisa selecioda')
 	client = MongoClient('localhost', 27017)
 	db = client.self_awareness_database
 	mainTrack_Collection = db.mainTrack3
 	tudo = mainTrack_Collection.find()
-#	tudo2 = []
-	#print(type(tudo))
-	#for obj in mainTrack_Collection.find():
-#		i = 0
-#		print(obj['date'].strftime("%d.%m.%Y - %H:%M"))
-#		tudo[i]['date'] = obj['date'].strftime("%d.%m.%Y - %H:%M")
-#		i = i + 1
-#		print(tudo[i])
-		#tudo2 = {'autor': obj['autor'], 'date': obj['date'].strftime("%d.%m.%Y - %H:%M"), 'mainQuestion': obj['mainQuestion'], 'Related_US': #obj['Related_US']}
-		#print(tudo2)
-		#print(type(tudo2))
-		#print(type(obj))
-	
 	dropdown_list2 = []
 	for track in mainTrack_Collection.find():
 		if track['date'].strftime("%d.%m.%Y - %H:%M")[0:2] not in dropdown_list2:
-			dropdown_list2.append(track['date'].strftime("%d.%m.%Y - %H:%M")[0:2])
-			
-	#if request.method == 'POST':
-		#if request.form['submit_button'] == 'Do Something':
-			#print('teste')
-		 
+			dropdown_list2.append(track['date'].strftime("%d.%m.%Y - %H:%M")[0:2])		 
 	return render_template('selfAwareness.html', title='Home', mainTracks = tudo, dropdown_list = dropdown_list2, rildo = 'Nathan' )
 	
 @app.route('/drop')

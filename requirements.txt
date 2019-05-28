@@ -8,6 +8,7 @@ Jinja2==2.10.1
 MarkupSafe==1.1.1
 py-getch==1.0.1
 pymongo==3.8.0
+pynput==1.4.2
 pypiwin32==223
 pywin32==224
 pywinauto==0.6.6
