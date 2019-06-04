@@ -49,48 +49,50 @@ def control_time():
 	#-----------------------------------------------------------------------------------
 	print(datetime.datetime.now().strftime("%d.%m.%Y - %H:%M"))
 	#-----------------------------------------------------------------------------------
-	appCmd = Application().connect(path=r"C:\windows\system32\cmd.exe")
-	dialogRildo = appCmd.top_window()
-	dialogRildo.set_focus()
+	try:
+		appCmd = Application().connect(path=r"C:\windows\system32\cmd.exe")
+		dialogRildo = appCmd.top_window()
+		dialogRildo.set_focus()
+	
 	#-----------------------------------------------------------------------------------
 	
 	
-	pergunta1 = input('O que esteve fzendo durante este tempo? \n')
-	# ------------
-	us = ''
-	recurrentQuestion = ''
-	for obj in mainTrack_Collection2.find().sort([("date", -1)]).limit(1):
-		if obj["date"].strftime("%d.%m.%Y - %H:%M")[0:2] == todayDate.strftime("%d.%m.%Y - %H:%M")[0:2]:
-			if  obj["Related_US"] != '' and obj["Related_US"] != 'N/A':
-				while True:
-					recurrentQuestion = input('Ainda está trabalhando na ultima tarefa? (%s) - S/N  \n' %obj["Related_US"])
-					try:
-						if recurrentQuestion != "s" and recurrentQuestion != "n":
-							raise ValueError("A resposta deve ser S (sim) ou N (nao)")
-						else:
-							break
-					except ValueError as ve:
-						print (ve)
-				if recurrentQuestion == 's':
-					us = obj["Related_US"]
-	if us == '':
-		us = input('US?? ')
-					
-	#-------------------
+		pergunta1 = input('O que esteve fzendo durante este tempo? \n')
+		# ------------
+		us = ''
+		recurrentQuestion = ''
+		for obj in mainTrack_Collection2.find().sort([("date", -1)]).limit(1):
+			if obj["date"].strftime("%d.%m.%Y - %H:%M")[0:2] == todayDate.strftime("%d.%m.%Y - %H:%M")[0:2]:
+				if  obj["Related_US"] != '' and obj["Related_US"] != 'N/A':
+					while True:
+						recurrentQuestion = input('Ainda está trabalhando na ultima tarefa? (%s) - S/N  \n' %obj["Related_US"])
+						try:
+							if recurrentQuestion != "s" and recurrentQuestion != "n":
+								raise ValueError("A resposta deve ser S (sim) ou N (nao)")
+							else:
+								break
+						except ValueError as ve:
+							print (ve)
+					if recurrentQuestion == 's':
+						us = obj["Related_US"]
+		if us == '':
+			us = input('US?? ')
+						
+		#-------------------
 
-	temp = { "autor": "Nathan",
-			"date":datetime.datetime.now(), #.strftime("%d.%m.%Y - %H:%M"), #verificar se tirando esse strftime ele salva como data
-			"mainQuestion":pergunta1,
-			"Related_US" : us}
-	#------------- PEGAR A ULTIMA COISA INSERIDA
-	
-	
-	#------------------------
-	temp_id = mainTrack_Collection2.insert_one(temp).inserted_id
-	print('Record Salvo!! Id      >>   ' , temp_id)
-	dialogRildo.minimize()
-	
-	
+		temp = { "autor": "Nathan",
+				"date":datetime.datetime.now(), #.strftime("%d.%m.%Y - %H:%M"), #verificar se tirando esse strftime ele salva como data
+				"mainQuestion":pergunta1,
+				"Related_US" : us}
+		#------------- PEGAR A ULTIMA COISA INSERIDA
+		
+		
+		#------------------------
+		temp_id = mainTrack_Collection2.insert_one(temp).inserted_id
+		print('Record Salvo!! Id      >>   ' , temp_id)
+		dialogRildo.minimize()
+	except:
+			print ('Computador bloqueado')
 
 class checkMouseClass():
 	def __init__(self,t,hFunction):
@@ -112,7 +114,7 @@ class checkMouseClass():
 	def is_Alive(self):
 		return self.thread.is_alive()
 	
-class Application():
+class Applicationt():
 	def __init__(self):
 		self.mousePositionX = 0
 		self.mousePositionY = 0
@@ -154,13 +156,15 @@ class Application():
 		#print ('Teste::: X: %d e Y: %d' %(self.mousePositionX, self.mousePositionY))
 	
 def main():
-	#threading.Timer(20, main).start()
+	threading.Timer(30, main).start()
 	#threading.Timer(5, checkMouseInactive).start()
-	#control_time()
+	#threading.Timer(30, control_time).start()
+	control_time()
 	#checkMouseInactive()
-	timer = checkMouseClass(5, checkMouseInactive)
-	timer.start()
-	timer2 = checkMouseClass(20, control_time)
-	timer2.start()
+	#timer = checkMouseClass(5, checkMouseInactive)
+	#timer.start()
+	#timer2 = checkMouseClass(20, control_time)
+	#timer2.start()
 	
-Application()
+#---------sApplication()
+main()
