@@ -91,8 +91,9 @@ def control_time():
 		temp_id = mainTrack_Collection2.insert_one(temp).inserted_id
 		print('Record Salvo!! Id      >>   ' , temp_id)
 		dialogRildo.minimize()
-	except:
-			print ('Computador bloqueado')
+	except Exception as e:
+			#print ('Computador bloqueado  >>   ' )
+			print('Disparou exception>>>: ' + str(e))
 
 class checkMouseClass():
 	def __init__(self,t,hFunction):
@@ -116,16 +117,77 @@ class checkMouseClass():
 	
 class Applicationt():
 	def __init__(self):
-		self.mousePositionX = 0
-		self.mousePositionY = 0
-		self.timer = checkMouseClass(20, self.tasks)
-		self.timer.start()
-		self.timer2 = checkMouseClass(5, self.mouse)
-		self.timer2.start()
+		self.desckBloqued = False
+		self.timeAwayLst = []
+		#self.mousePositionX = 0
+		#self.mousePositionY = 0
+		#self.timer = checkMouseClass(20, self.tasks)
+		#self.timer.start()
+		#self.timer2 = checkMouseClass(5, self.mouse)
+		#self.timer2.start()
+		
 		#timer3 = checkMouseClass(5, self.printMouseP)
 		#timer3.start()
+		self.timer4 = checkMouseClass(15, self.checkMain)
+		self.timer4.start()
 		
-	
+	def checkMain (self):
+		todayDate = datetime.datetime.now()
+		print('O dia de hoje é: ' , todayDate.strftime("%d.%m.%Y - %H:%M")[0:2])
+		client = MongoClient('localhost', 27017)
+		db = client.self_awareness_database
+		mainTrack_Collection2 = db.mainTrack3
+		print(datetime.datetime.now().strftime("%d.%m.%Y - %H:%M"))
+		try:
+			appCmd = Application().connect(path=r"C:\windows\system32\cmd.exe")
+			dialogRildo = appCmd.top_window()
+			dialogRildo.set_focus()
+			self.desckBloqued = False
+		except Exception as e:
+			#print ('Computador bloqueado  >>   ' )
+			print('Disparou exception>>>: ' + str(e))
+			if ('There is no active desktop' in str(e)):
+				self.timeAwayLst.append(todayDate.strftime("%H:%M:%S"))
+				self.desckBloqued = True
+				
+		if (len(self.timeAwayLst) != 0):
+			print('Vendo a lista de tempos que o computador ficou bloqueado!' , self.timeAwayLst)
+			
+			
+		if(self.desckBloqued==False):
+			self.timeAwayLst.clear()
+			pergunta1 = input('O que esteve fzendo durante este tempo? \n')
+			# ------------
+			us = ''
+			recurrentQuestion = ''
+			for obj in mainTrack_Collection2.find().sort([("date", -1)]).limit(1):
+				if obj["date"].strftime("%d.%m.%Y - %H:%M")[0:2] == todayDate.strftime("%d.%m.%Y - %H:%M")[0:2]:
+					if  obj["Related_US"] != '' and obj["Related_US"] != 'N/A':
+						while True:
+							recurrentQuestion = input('Ainda está trabalhando na ultima tarefa? (%s) - S/N  \n' %obj["Related_US"])
+							try:
+								if recurrentQuestion != "s" and recurrentQuestion != "n":
+									raise ValueError("A resposta deve ser S (sim) ou N (nao)")
+								else:
+									break
+							except ValueError as ve:
+								print (ve)
+						if recurrentQuestion == 's':
+							us = obj["Related_US"]
+			if us == '':
+				us = input('US?? ')
+			temp = { "autor": "Nathan",
+				"date":datetime.datetime.now(), #.strftime("%d.%m.%Y - %H:%M"), #verificar se tirando esse strftime ele salva como data
+				"mainQuestion":pergunta1,
+				"Related_US" : us}
+			#------------- PEGAR A ULTIMA COISA INSERIDA
+			
+			
+			#------------------------
+			temp_id = mainTrack_Collection2.insert_one(temp).inserted_id
+			print('Record Salvo!! Id      >>   ' , temp_id)
+			dialogRildo.minimize()
+			
 	def tasks(self):
 		print('tasks')
 		with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
@@ -147,8 +209,8 @@ class Applicationt():
 					print('Voltou a iniciar')
 			self.mousePositionX = x
 			self.mousePositionY = y
-		except:
-			print ('Computador bloqueado')
+		except Exception as e:
+			print ('Computador bloqueado >>   ', e)
 			
 		
 		
@@ -156,7 +218,7 @@ class Applicationt():
 		#print ('Teste::: X: %d e Y: %d' %(self.mousePositionX, self.mousePositionY))
 	
 def main():
-	threading.Timer(30, main).start()
+	threading.Timer(15, main).start()
 	#threading.Timer(5, checkMouseInactive).start()
 	#threading.Timer(30, control_time).start()
 	control_time()
@@ -166,5 +228,5 @@ def main():
 	#timer2 = checkMouseClass(20, control_time)
 	#timer2.start()
 	
-#---------sApplication()
-main()
+Applicationt()
+#main()
