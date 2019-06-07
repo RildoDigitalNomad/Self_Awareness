@@ -25,7 +25,7 @@ def on_press(key):
 def on_release(key):
 	print('{0} released'.format(key))
 	if key == keyboard.Key.esc:
-		# Stop listener
+		#Stop listener
 		return False
 
 
@@ -84,6 +84,15 @@ def control_time():
 				"date":datetime.datetime.now(), #.strftime("%d.%m.%Y - %H:%M"), #verificar se tirando esse strftime ele salva como data
 				"mainQuestion":pergunta1,
 				"Related_US" : us}
+				
+				
+				#import datetime
+				#a = datetime.datetime.now()
+				# ...wait a while...
+				#b = datetime.datetime.now()
+				#print(b-a)
+				#0:03:43.984000
+				
 		#------------- PEGAR A ULTIMA COISA INSERIDA
 		
 		
@@ -119,17 +128,27 @@ class Applicationt():
 	def __init__(self):
 		self.desckBloqued = False
 		self.timeAwayLst = []
-		#self.mousePositionX = 0
-		#self.mousePositionY = 0
+		
+		
 		#self.timer = checkMouseClass(20, self.tasks)
 		#self.timer.start()
-		#self.timer2 = checkMouseClass(5, self.mouse)
-		#self.timer2.start()
+		
+		#------- Mouse Thread
+		self.mousePositionX = 0
+		self.mousePositionY = 0
+		self.timer2 = checkMouseClass(5, self.mouse)
+		self.timer2.start()
+		#-----------------------
+		
+		
 		
 		#timer3 = checkMouseClass(5, self.printMouseP)
 		#timer3.start()
-		self.timer4 = checkMouseClass(15, self.checkMain)
-		self.timer4.start()
+		
+		#------------- Thread da captura de atividades
+		
+		#self.timer4 = checkMouseClass(15, self.checkMain)
+		#self.timer4.start()
 		
 	def checkMain (self):
 		todayDate = datetime.datetime.now()
@@ -144,14 +163,12 @@ class Applicationt():
 			dialogRildo.set_focus()
 			self.desckBloqued = False
 		except Exception as e:
-			#print ('Computador bloqueado  >>   ' )
 			print('Disparou exception>>>: ' + str(e))
 			if ('There is no active desktop' in str(e)):
-				self.timeAwayLst.append(todayDate.strftime("%H:%M:%S"))
+				self.timeAwayLst.append(datetime.datetime.now())
 				self.desckBloqued = True
 				
-		if (len(self.timeAwayLst) != 0):
-			print('Vendo a lista de tempos que o computador ficou bloqueado!' , self.timeAwayLst)
+		
 			
 			
 		if(self.desckBloqued==False):
@@ -187,6 +204,9 @@ class Applicationt():
 			temp_id = mainTrack_Collection2.insert_one(temp).inserted_id
 			print('Record Salvo!! Id      >>   ' , temp_id)
 			dialogRildo.minimize()
+		else:
+			if (len(self.timeAwayLst) != 0):
+				print('Vendo a lista de tempos que o computador ficou bloqueado!' , self.timeAwayLst)
 			
 	def tasks(self):
 		print('tasks')
@@ -194,24 +214,25 @@ class Applicationt():
 			listener.join()
 		
 	def mouse(self):
-		self.laps = 0
+		#self.laps = 0
 		try:
 			x, y = win32api.GetCursorPos()
 			if ( x == self.mousePositionX and y == self.mousePositionY):
 				print('mouse parado')
-				self.timer.cancel()
+				#self.timer.cancel()
 			else: 
 				print ('mudou')
 				#print('Testando::: ' , self.timer.getName())
-				if not (self.timer.is_Alive()): 
-					self.timer = checkMouseClass(20, self.tasks)
-					self.timer.start()
-					print('Voltou a iniciar')
+				#if not (self.timer.is_Alive()): 
+					#self.timer = checkMouseClass(20, self.tasks)
+					#self.timer.start()
+					#print('Voltou a iniciar')
 			self.mousePositionX = x
 			self.mousePositionY = y
 		except Exception as e:
-			print ('Computador bloqueado >>   ', e)
-			
+			print ('Deu algum ruim 2 >>   ' + str(e))
+		#with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
+		#	listener.join()
 		
 		
 	#def printMouseP(self):
