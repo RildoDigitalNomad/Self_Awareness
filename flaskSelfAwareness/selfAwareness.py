@@ -18,15 +18,17 @@ from pynput import keyboard
 
 def on_press(key):
 	try:
-		print('alphanumeric key {0} pressed'.format(key.char))
+		#print('alphanumeric key {0} pressed'.format(key.char))
+		return False
 	except AttributeError:
-		print('special key {0} pressed'.format(key))
+		#print('special key {0} pressed'.format(key))
+		return False
 
 def on_release(key):
-	print('{0} released'.format(key))
-	if key == keyboard.Key.esc:
+	#print('{0} released'.format(key))
+	#if key == keyboard.Key.esc:
 		#Stop listener
-		return False
+	return False
 
 
 
@@ -128,10 +130,10 @@ class Applicationt():
 	def __init__(self):
 		self.desckBloqued = False
 		self.timeAwayLst = []
+		self.keyBoEntry = False
 		
-		
-		#self.timer = checkMouseClass(20, self.tasks)
-		#self.timer.start()
+		self.timer = checkMouseClass(2, self.tasks)
+		self.timer.start()
 		
 		#------- Mouse Thread
 		self.mousePositionX = 0
@@ -195,7 +197,7 @@ class Applicationt():
 				us = input('US?? ')
 			temp = { "autor": "Nathan",
 				"date":datetime.datetime.now(), #.strftime("%d.%m.%Y - %H:%M"), #verificar se tirando esse strftime ele salva como data
-				"mainQuestion":pergunta1,
+				"mainQuestion":pergunta1,	
 				"Related_US" : us}
 			#------------- PEGAR A ULTIMA COISA INSERIDA
 			
@@ -211,22 +213,25 @@ class Applicationt():
 	def tasks(self):
 		print('tasks')
 		with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
+			self.keyBoEntry = False
 			listener.join()
+			#print('teste')
+			self.keyBoEntry = True
 		
 	def mouse(self):
 		#self.laps = 0
 		try:
 			x, y = win32api.GetCursorPos()
-			if ( x == self.mousePositionX and y == self.mousePositionY):
+			if ( x == self.mousePositionX and y == self.mousePositionY and self.keyBoEntry == False):
 				print('mouse parado')
-				#self.timer.cancel()
+				self.timer.cancel()
 			else: 
 				print ('mudou')
 				#print('Testando::: ' , self.timer.getName())
-				#if not (self.timer.is_Alive()): 
-					#self.timer = checkMouseClass(20, self.tasks)
-					#self.timer.start()
-					#print('Voltou a iniciar')
+				if not (self.timer.is_Alive()): 
+					self.timer = checkMouseClass(2, self.tasks)
+					self.timer.start()
+					print('Voltou a iniciar')
 			self.mousePositionX = x
 			self.mousePositionY = y
 		except Exception as e:
