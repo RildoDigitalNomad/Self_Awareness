@@ -128,9 +128,12 @@ class checkMouseClass():
 	
 class Applicationt():
 	def __init__(self):
+		self.timeToInactiveTrack = 300
 		self.desckBloqued = False
 		self.timeAwayLst = []
 		self.keyBoEntry = False
+		self.inactiveTime = None
+
 		
 		self.timer = checkMouseClass(2, self.tasks)
 		self.timer.start()
@@ -223,9 +226,15 @@ class Applicationt():
 		try:
 			x, y = win32api.GetCursorPos()
 			if ( x == self.mousePositionX and y == self.mousePositionY and self.keyBoEntry == False):
+				diffDate = datetime.datetime.now() - self.inactiveTime
+				print (diffDate.seconds)	
+				if ( diffDate.seconds > 300 ):
+					print("Teste dos 5 minutos ocioso")
 				print('mouse parado')
+				print(self.inactiveTime)
 				self.timer.cancel()
-			else: 
+			else:
+				self.inactiveTime = datetime.datetime.now()
 				print ('mudou')
 				#print('Testando::: ' , self.timer.getName())
 				if not (self.timer.is_Alive()): 
