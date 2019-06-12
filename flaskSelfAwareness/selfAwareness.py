@@ -110,6 +110,7 @@ class checkMouseClass():
 	def __init__(self,t,hFunction):
 		self.t=t
 		self.hFunction = hFunction
+		#hFunction()
 		self.thread = Timer(self.t,self.handle_function)
 
 	def handle_function(self):
@@ -122,11 +123,16 @@ class checkMouseClass():
 
 	def cancel(self):
 		self.thread.cancel()
+		
+	def  getName(self):
+		return self.thread.name
 	
 	def is_Alive(self):
 		return self.thread.is_alive()
 	
 class Applicationt():
+
+# THREAD DATAAAAAAAAAA
 	def __init__(self):
 		self.timeToInactiveTrack = 300
 		self.desckBloqued = False
@@ -136,13 +142,13 @@ class Applicationt():
 
 		
 		self.timer = checkMouseClass(2, self.tasks)
-		self.timer.start()
+		self.timer2 = checkMouseClass(5, self.mouse)
+		self.timer4 = checkMouseClass(20, self.checkMain)
 		
 		#------- Mouse Thread
 		self.mousePositionX = 0
 		self.mousePositionY = 0
-		self.timer2 = checkMouseClass(5, self.mouse)
-		self.timer2.start()
+		
 		#-----------------------
 		
 		
@@ -152,8 +158,19 @@ class Applicationt():
 		
 		#------------- Thread da captura de atividades
 		
-		#self.timer4 = checkMouseClass(15, self.checkMain)
-		#self.timer4.start()
+		self.timerMain = checkMouseClass(1, self.main)
+		self.timerMain.start()
+	
+	def main(self):
+		
+		
+		if not (self.timer.is_Alive()):
+			self.timer.start()
+		if not (self.timer2.is_Alive()):
+			self.timer2.start()
+		if not (self.timer4.is_Alive()):	
+			self.timer4.start()
+		print('Main')
 		
 	def checkMain (self):
 		todayDate = datetime.datetime.now()
@@ -232,9 +249,16 @@ class Applicationt():
 					print("Teste dos 5 minutos ocioso")
 				print('mouse parado')
 				print(self.inactiveTime)
+				rildo = self.timer4.getName()
+				print(rildo)
 				self.timer.cancel()
 			else:
 				self.inactiveTime = datetime.datetime.now()
+				
+				if not (self.timer4.is_Alive()):		
+					self.timer4 = checkMouseClass(20, self.checkMain)
+					self.timer4.start()
+					print('Iniciou a thread da atividade constante')
 				print ('mudou')
 				#print('Testando::: ' , self.timer.getName())
 				if not (self.timer.is_Alive()): 
